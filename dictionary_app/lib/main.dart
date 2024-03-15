@@ -1,5 +1,6 @@
 import 'package:dictionary_app/DetaySayfa.dart';
 import 'package:dictionary_app/Kelimeler.dart';
+import 'package:dictionary_app/KelimelerDAO.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -34,17 +35,13 @@ class _AnasayfaState extends State<Anasayfa> {
   bool aktifArama = false;
   String arananKelime = "";
 
-  Future<List<Kelimeler>> tumKelimeler() async {
-    var kelimelerListesi = <Kelimeler>[];
+  Future<List<Kelimeler>> tumKelimeleriGoster() async {
+    var kelimelerListesi = await KelimelerDAO().tumKelimeler();
+    return kelimelerListesi;
+  }
 
-    var k1 = Kelimeler(1, "dog", "köpek");
-    var k2 = Kelimeler(2, "cat", "kedi");
-    var k3 = Kelimeler(3, "car", "araba");
-
-    kelimelerListesi.add(k1);
-    kelimelerListesi.add(k2);
-    kelimelerListesi.add(k3);
-
+  Future<List<Kelimeler>> aramaYap(String arananKelime) async {
+    var kelimelerListesi = await KelimelerDAO().kelimeAra(arananKelime);
     return kelimelerListesi;
   }
 
@@ -87,7 +84,7 @@ class _AnasayfaState extends State<Anasayfa> {
         ],
       ),
       body: FutureBuilder<List<Kelimeler>>(
-        future: tumKelimeler(),
+        future: aktifArama ? aramaYap(arananKelime) : tumKelimeleriGoster(),
         builder: (context, snapshot){
           if(snapshot.hasData){
             var kelimelerListesi = snapshot.data;
