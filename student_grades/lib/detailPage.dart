@@ -1,17 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:student_grades/Grades.dart';
+import 'package:student_grades/GradesDAO.dart';
+import 'package:student_grades/main.dart';
 
 class DetailPage extends StatefulWidget {
-  String detailName;
-  double detailMidterm;
-  double detailFinal;
+  Grades grade;
 
-  DetailPage(this.detailName, this.detailMidterm, this.detailFinal);
+  DetailPage(this.grade);
 
   @override
   State<DetailPage> createState() => _DetailPageState();
 }
 
 class _DetailPageState extends State<DetailPage> {
+
+  var courseNameTF = TextEditingController();
+  var midtermGradeTF = TextEditingController();
+  var finalGradeTF = TextEditingController();
+
+  Future<void> delete(int grade_id) async {
+    await GradesDAO().delete(grade_id);
+    Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+  }
+
+  Future<void> update(int grade_id,String course_name, int midterm_grade, int final_grade) async {
+    await GradesDAO().update(grade_id, course_name, midterm_grade, final_grade);
+    Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    var grade = widget.grade;
+    courseNameTF.text = grade.courseName;
+    midtermGradeTF.text = grade.midtermGrade.toString();
+    finalGradeTF.text = grade.finalGrade.toString();
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +48,13 @@ class _DetailPageState extends State<DetailPage> {
           TextButton(
             child: Text("Delete"),
             onPressed: (){
-
+              delete(widget.grade.gradeID);
             },
           ),
           TextButton(
             child: Text("Update"),
             onPressed: (){
-
+              update(widget.grade.gradeID, courseNameTF.text, int.parse(midtermGradeTF.text), int.parse(finalGradeTF.text));
             },
           ),
         ],
@@ -41,9 +66,9 @@ class _DetailPageState extends State<DetailPage> {
             Padding(
               padding: const EdgeInsets.only(right: 20.0, left: 20.0),
               child: TextField(
+                controller: courseNameTF,
                 decoration: InputDecoration(
-                  labelText: 'Course Name : ${widget.detailName}',
-                  hintText: '${widget.detailName}',
+                  hintText: '${widget.grade.courseName}',
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -51,9 +76,9 @@ class _DetailPageState extends State<DetailPage> {
             Padding(
               padding: const EdgeInsets.only(right: 20.0, left: 20.0),
               child: TextField(
+                controller: midtermGradeTF,
                 decoration: InputDecoration(
-                  labelText: 'Midterm : ${widget.detailMidterm}',
-                  hintText: "${widget.detailMidterm}",
+                  hintText: "${widget.grade.midtermGrade}",
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -61,9 +86,9 @@ class _DetailPageState extends State<DetailPage> {
             Padding(
               padding: const EdgeInsets.only(right: 20.0, left: 20.0),
               child: TextField(
+                controller: finalGradeTF,
                 decoration: InputDecoration(
-                  labelText: 'Final : ${widget.detailFinal}',
-                  hintText: "${widget.detailFinal}",
+                  hintText: "${widget.grade.finalGrade}",
                   border: OutlineInputBorder(),
                 ),
               ),

@@ -1,7 +1,8 @@
 class Grades {
+  int gradeID;
   String courseName;
-  double midtermGrade;
-  double finalGrade;
+  int midtermGrade;
+  int finalGrade;
 
-  Grades(this.courseName, this.midtermGrade, this.finalGrade);
+  Grades(this.gradeID, this.courseName, this.midtermGrade, this.finalGrade);
 }

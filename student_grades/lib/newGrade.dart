@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:student_grades/GradesDAO.dart';
+import 'package:student_grades/main.dart';
 
 class NewGrade extends StatefulWidget {
   const NewGrade({super.key});
@@ -9,12 +11,14 @@ class NewGrade extends StatefulWidget {
 
 class _NewGradeState extends State<NewGrade> {
 
-  TextEditingController courseNameTF = TextEditingController();
-  TextEditingController midtermGradeTF = TextEditingController();
-  TextEditingController finalGradeTF = TextEditingController();
-  String newCourseName = "";
-  String newMidtermGrade = "";
-  String newFinalGrade = "";
+  var courseNameTF = TextEditingController();
+  var midtermGradeTF = TextEditingController();
+  var finalGradeTF = TextEditingController();
+
+  Future<void> newRecord(String course_name, int midterm_grade, int final_grade) async {
+    await GradesDAO().addGrade(course_name, midterm_grade, final_grade);
+    Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +46,7 @@ class _NewGradeState extends State<NewGrade> {
             SizedBox(
               width: 250,
               child: TextField(
+                controller: midtermGradeTF,
                 decoration: InputDecoration(
                   labelText: "Midterm Grade",
                 ),
@@ -50,6 +55,7 @@ class _NewGradeState extends State<NewGrade> {
             SizedBox(
               width: 250,
               child: TextField(
+                controller: finalGradeTF,
                 decoration: InputDecoration(
                   labelText: "Final Grade",
                 ),
@@ -62,12 +68,7 @@ class _NewGradeState extends State<NewGrade> {
         label: Text("Save"),
         icon: Icon(Icons.save),
         onPressed: (){
-          setState(() {
-            newCourseName = courseNameTF.text;
-            newMidtermGrade = midtermGradeTF.text;
-            newFinalGrade = finalGradeTF.text;
-          });
-          print("New Record.");
+          newRecord(courseNameTF.text, int.parse(midtermGradeTF.text), int.parse(finalGradeTF.text));
         },
       ),
     );
